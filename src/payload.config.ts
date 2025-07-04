@@ -16,19 +16,37 @@ import { Header } from './Header/config'
 import { plugins } from './plugins'
 import { defaultLexical } from '@/fields/defaultLexical'
 import { getServerSideURL } from './utilities/getURL'
+import { resendAdapter } from '@payloadcms/email-resend'
+import { s3Storage } from '@payloadcms/storage-s3'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
 
 export default buildConfig({
   admin: {
+    meta: {
+      titleSuffix: '- Abyss Walker',
+      description: 'Abyss Walker Blog Admin',
+      openGraph: {
+        title: 'Abyss Walker Blog Admin',
+        description: 'Abyss Walker Blog Admin',
+        siteName: 'Abyss Walker Blog Admin',
+        images: [
+          "/website-template-OG.webp"
+        ],
+      },
+      icons: [
+        {
+          rel: 'icon',
+          url: '/favicon.ico',
+        },
+      ],
+    },
     components: {
-      // The `BeforeLogin` component renders a message that you see while logging into your admin panel.
-      // Feel free to delete this at any time. Simply remove the line below.
-      beforeLogin: ['@/components/BeforeLogin'],
-      // The `BeforeDashboard` component renders the 'welcome' block that you see after logging into your admin panel.
-      // Feel free to delete this at any time. Simply remove the line below.
-      beforeDashboard: ['@/components/BeforeDashboard'],
+      graphics: {
+        Logo: "/graphics/Logo#Logo",
+        Icon: "/graphics/Icon#Icon",
+      }
     },
     importMap: {
       baseDir: path.resolve(dirname),
@@ -69,7 +87,20 @@ export default buildConfig({
   globals: [Header, Footer],
   plugins: [
     ...plugins,
-    // storage-adapter-placeholder
+    s3Storage({
+      collections: {
+        media: true,
+      },
+      bucket: process.env.S3_BUCKET || '',
+      config: {
+        credentials: {
+          accessKeyId: process.env.S3_ACCESS_KEY_ID || '',
+          secretAccessKey: process.env.S3_SECRET_ACCESS_KEY || '',
+        },
+        region: process.env.S3_REGION,
+        endpoint: process.env.S3_ENDPOINT,
+      },
+    }),
   ],
   secret: process.env.PAYLOAD_SECRET,
   sharp,
@@ -91,4 +122,9 @@ export default buildConfig({
     },
     tasks: [],
   },
+  email: resendAdapter({
+    defaultFromAddress: 'dev@payloadcms.com',
+    defaultFromName: 'Payload CMS',
+    apiKey: process.env.RESEND_API_KEY || '',
+  }),
 })
