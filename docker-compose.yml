@@ -5,8 +5,6 @@ services:
       - blogdb
     env_file:
       - .env
-    ports:
-      - "3000:3000"
     networks:
       - payload_network
       - store_default
