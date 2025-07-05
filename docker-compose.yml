@@ -8,6 +8,7 @@ services:
     networks:
       - payload_network
       - store_default
+    restart: unless-stopped
 
   blogdb:
     image: postgres:17
@@ -15,12 +16,13 @@ services:
         POSTGRES_USER: postgres
         POSTGRES_PASSWORD: postgres
     volumes:
-      - data:/var/lib/postgresql/
+      - pgdata:/var/lib/postgresql/data
     networks:
       - payload_network
+    restart: unless-stopped
       
 volumes:
-  data:
+  pgdata:
 
 networks:
   payload_network:
