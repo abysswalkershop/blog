@@ -1,26 +1,26 @@
-version: '3'
-
 services:
   payload:
     build: .
     depends_on:
-      - db
+      - blogdb
     env_file:
       - .env
+    ports:
+      - "3000:3000"
     networks:
       - payload_network
       - store_default
 
-  db:
-    image: postgres:latest
+  blogdb:
+    image: postgres:17
     environment:
         POSTGRES_USER: postgres
         POSTGRES_PASSWORD: postgres
     volumes:
-        - data:/var/lib/postgresql/
+      - data:/var/lib/postgresql/
     networks:
       - payload_network
-
+      
 volumes:
   data:
 

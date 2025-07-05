@@ -1,11 +1,12 @@
-FROM oven/bun:latest
+FROM node:24-alpine
 
 WORKDIR /app
 COPY . .
 
-RUN bun install
-RUN bun run build
+ENV NODE_ENV=production
+
+RUN npm install
 
 EXPOSE 3000
 
-CMD [ "bun", "run", "start" ]
+CMD ["sh", "-c", "npm run build && npm run start"]
