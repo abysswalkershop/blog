@@ -3,8 +3,6 @@ FROM node:24-alpine
 WORKDIR /app
 COPY . .
 
-ENV NODE_ENV=production
-
 RUN npm install
 
 EXPOSE 3000
